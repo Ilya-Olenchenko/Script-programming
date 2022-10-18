@@ -1,7 +1,7 @@
 {
-  "name": "homework",
+  "name": "lab2",
   "version": "1.0.0",
-  "description": "home work, KI-192 Nasinnyk Dmytro",
+  "description": "lab2",
   "main": "server.js",
   "scripts": {
     "test": "jest",
@@ -10,14 +10,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pinkkii/homework.git"
+    "url": "git+https://github.com/Ilya-Olenchenko/Script-programming.git"
   },
-  "author": "Nasinnyk",
+  "author": "Olenchenko",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/pinkkii/homework/issues"
-  },
-  "homepage": "https://github.com/pinkkii/homework#readme",
   "dependencies": {
     "axios": "^1.1.2",
     "convict": "^6.2.3",
