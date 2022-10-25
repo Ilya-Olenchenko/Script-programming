@@ -28,8 +28,8 @@
                 <input class="form-control" name="name" />
             </div>
             <div class="form-group">
-                <label for="age">Прізвище:</label>
-                <input class="form-control" lastname="lastname" />
+                <label for="lastname">Прізвище:</label>
+                <input class="form-control" name="lastname" />
             </div>
             <div class="form-group">
                 <label for="age">Вік:</label>
@@ -84,19 +84,19 @@
                 const form = document.forms["studentForm"];
                 form.elements["id"].value = student._id;
                 form.elements["name"].value = student.name;
-                form.elements["age"].value = student.age;
                 form.elements["lastname"].value = student.lastname;
+                form.elements["age"].value = student.age;
             }
         }
         // Добавление пользователя
-        async function Createstudent(studentName, studentAge) {
+        async function Createstudent(studentName, studentLastName, studentAge) {
 
             const response = await fetch("api/students", {
                 method: "POST",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: studentName,
-                    lastname: lastName,
+                    lastname: studentLastName,
                     age: parseInt(studentAge, 10)
                 })
             });
@@ -107,14 +107,14 @@
             }
         }
         // Изменение пользователя
-        async function Editstudent(studentId, studentName, studentAge) {
+        async function Editstudent(studentId, studentName, studentLastName, studentAge) {
             const response = await fetch("api/students", {
                 method: "PUT",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
                     id: studentId,
                     name: studentName,
-                    lastname: lastName,
+                    lastname: studentLastName,
                     age: parseInt(studentAge, 10)
                 })
             });
