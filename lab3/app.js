@@ -49,7 +49,7 @@ app.post("/api/students", jsonParser, function (req, res) {
     const studentLastName = req.body.lastname;
     const studentAge = req.body.age;
 
-    const student = { name: studentName, studentLastName: studentLastName, age: studentAge };
+    const student = { name: studentName, lastname: studentLastName, age: studentAge };
 
     const collection = req.app.locals.collection;
     collection.insertOne(student, function (err, result) {
@@ -80,7 +80,7 @@ app.put("/api/students", jsonParser, function (req, res) {
     const studentAge = req.body.age;
 
     const collection = req.app.locals.collection;
-    collection.findOneAndUpdate({ _id: id }, { $set: { age: studentAge, studentLastName: studentLastName, name: studentName } },
+    collection.findOneAndUpdate({ _id: id }, { $set: { age: studentAge, lastname: studentLastName, name: studentName } },
         { returnOriginal: false }, function (err, result) {
 
             if (err) return console.log(err);
