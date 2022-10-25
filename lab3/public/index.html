@@ -20,7 +20,7 @@
         }
     </style>
     <div class="container">
-        <h2>Лістинг користувачів</h2>
+        <h2>Список студентів</h2>
         <form name="studentForm">
             <input type="hidden" name="id" value="0" />
             <div class="form-group">
@@ -35,6 +35,10 @@
                 <label for="age">Вік:</label>
                 <input class="form-control" name="age" />
             </div>
+            <div class="form-group">
+                <label for="group">Група:</label>
+                <input class="form-control" name="group" />
+            </div>
             <div class="panel-body">
                 <button type="submit" class="btn btn-sm btn-primary">Зберегти</button>
                 <a id="reset" class="btn btn-sm btn-primary">Скинути</a>
@@ -47,6 +51,7 @@
                     <th>Ім'я</th>
                     <th>Прізвище</th>
                     <th>Вік</th>
+                    <th>Група</th>
                     <th></th>
                 </tr>
             </thead>
@@ -86,10 +91,11 @@
                 form.elements["name"].value = student.name;
                 form.elements["lastname"].value = student.lastname;
                 form.elements["age"].value = student.age;
+                form.elements["group"].value = student.group;
             }
         }
         // Добавление пользователя
-        async function Createstudent(studentName, studentLastName, studentAge) {
+        async function Createstudent(studentName, studentLastName, studentAge, studentGroup) {
 
             const response = await fetch("api/students", {
                 method: "POST",
@@ -97,7 +103,8 @@
                 body: JSON.stringify({
                     name: studentName,
                     lastname: studentLastName,
-                    age: parseInt(studentAge, 10)
+                    age: parseInt(studentAge, 10),
+                    group: studentGroup,
                 })
             });
             if (response.ok === true) {
@@ -107,7 +114,7 @@
             }
         }
         // Изменение пользователя
-        async function Editstudent(studentId, studentName, studentLastName, studentAge) {
+        async function Editstudent(studentId, studentName, studentLastName, studentAge, studentGroup) {
             const response = await fetch("api/students", {
                 method: "PUT",
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -115,7 +122,8 @@
                     id: studentId,
                     name: studentName,
                     lastname: studentLastName,
-                    age: parseInt(studentAge, 10)
+                    age: parseInt(studentAge, 10),
+                    group: studentGroup
                 })
             });
             if (response.ok === true) {
@@ -164,6 +172,10 @@
             ageTd.append(student.age);
             tr.append(ageTd);
 
+            const groupTd = document.createElement("td");
+            groupTd.append(student.group);
+            tr.append(groupTd);
+
             const linksTd = document.createElement("td");
 
             const editLink = document.createElement("a");
@@ -206,10 +218,11 @@
             const name = form.elements["name"].value;
             const lastname = form.elements["lastname"].value;
             const age = form.elements["age"].value;
+            const group = form.elements["group"].value;
             if (id == 0)
-                Createstudent(name, lastname, age);
+                Createstudent(name, lastname, age, group);
             else
-                Editstudent(id, name, lastname, age);
+                Editstudent(id, name, lastname, age, group);
         });
 
         // загрузка пользователей
