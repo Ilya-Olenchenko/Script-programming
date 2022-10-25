@@ -1,17 +1,17 @@
 const express = require("express");
-const MongoStudent = require("mongodb").MongoStudent;
+const MongoClient = require("mongodb").MongoClient;
 const objectId = require("mongodb").ObjectID;
 
 const app = express();
 const jsonParser = express.json();
 
-const mongoStudent = new MongoStudent("mongodb://localhost:27017/", { useUnifiedTopology: true });
+const mongoClient = new MongoClient("mongodb://localhost:27017/", { useUnifiedTopology: true });
 
 let mydb;
 
 app.use(express.static(__dirname + "/public"));
 
-mongoStudent.connect(function (err, student) {
+mongoClient.connect(function (err, student) {
     if (err) return console.log(err);
     mydb = student;
     app.locals.collection = student.db("mydb").collection("students");
