@@ -1,29 +1,31 @@
+const mongoose = require("mongoose");
 const express = require("express");
-const MongoClient = require("mongodb").MongoClient;
-const objectId = require("mongodb").ObjectID;
-
+const Schema = mongoose.Schema;
 const app = express();
 const jsonParser = express.json();
 
-const mongoClient = new MongoClient("mongodb://localhost:27017/", { useUnifiedTopology: true });
-
-let mydb;
+const studentScheme = new Schema(
+    {
+        name: String,
+        lastname: String,
+        age: Number,
+        group: String,
+    },
+    { versionKey: false }
+);
+const Student = mongoose.model("Student", studentScheme);
 
 app.use(express.static(__dirname + "/public"));
 
-mongoClient.connect(function (err, student) {
+mongoose.connect("mongodb://localhost:27017/usersdb", { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false }, function (err) {
     if (err) return console.log(err);
-    mydb = student;
-    app.locals.collection = student.db("mydb").collection("students");
     app.listen(3000, function () {
         console.log("Сервер запущено...");
     });
 });
 
 app.get("/api/students", function (req, res) {
-
-    const collection = req.app.locals.collection;
-    collection.find({}).toArray(function (err, students) {
+    Student.find({}, function (err, students) {
 
         if (err) return console.log(err);
         res.send(students)
@@ -31,13 +33,11 @@ app.get("/api/students", function (req, res) {
 
 });
 app.get("/api/students/:id", function (req, res) {
-
-    const id = new objectId(req.params.id);
-    const collection = req.app.locals.collection;
-    collection.findOne({ _id: id }, function (err, student) {
+    const id = req.params.id;
+    Student.findOne({ _id: id }, function (err, students) {
 
         if (err) return console.log(err);
-        res.send(student);
+        res.send(students);
     });
 });
 
@@ -50,24 +50,19 @@ app.post("/api/students", jsonParser, function (req, res) {
     const studentAge = req.body.age;
     const studentGroup = req.body.group;
 
-    const student = { name: studentName, lastname: studentLastName, age: studentAge, group: studentGroup };
+    const student = new Student({ name: studentName, lastname: studentLastName, age: studentAge, group: studentGroup });
 
-    const collection = req.app.locals.collection;
-    collection.insertOne(student, function (err, result) {
-
+    student.save(function (err) {
         if (err) return console.log(err);
         res.send(student);
     });
 });
 
 app.delete("/api/students/:id", function (req, res) {
-
-    const id = new objectId(req.params.id);
-    const collection = req.app.locals.collection;
-    collection.findOneAndDelete({ _id: id }, function (err, result) {
+    const id = req.params.id;
+    Student.findByIdAndDelete(id, function (err, user) {
 
         if (err) return console.log(err);
-        let student = result.value;
         res.send(student);
     });
 });
@@ -81,18 +76,10 @@ app.put("/api/students", jsonParser, function (req, res) {
     const studentAge = req.body.age;
     const studentGroup = req.body.group;
 
-    const collection = req.app.locals.collection;
-    collection.findOneAndUpdate({ _id: id }, { $set: { age: studentAge, lastname: studentLastName, name: studentName, group: studentGroup } },
-        { returnOriginal: false }, function (err, result) {
+    const newStudent = { age: studentAge, lastname: studentLastName, name: studentName, group: studentGroup };
 
-            if (err) return console.log(err);
-            const student = result.value;
-            res.send(student);
-        });
-});
-
-// прослушиваем прерывание работы программы (ctrl-c)
-process.on("SIGINT", () => {
-    mydb.close();
-    process.exit();
+    Student.findOneAndUpdate({ _id: id }, newStudent, { new: true }, function (err, user) {
+        if (err) return console.log(err);
+        res.send(student);
+    });
 });
