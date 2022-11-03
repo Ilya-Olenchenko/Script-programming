@@ -17,7 +17,7 @@ const Student = mongoose.model("Student", studentScheme);
 
 app.use(express.static(__dirname + "/public"));
 
-mongoose.connect("mongodb://localhost:27017/usersdb", { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false }, function (err) {
+mongoose.connect("mongodb://localhost:27017/studentsdb", { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false }, function (err) {
     if (err) return console.log(err);
     app.listen(3000, function () {
         console.log("Сервер запущено...");
@@ -60,7 +60,7 @@ app.post("/api/students", jsonParser, function (req, res) {
 
 app.delete("/api/students/:id", function (req, res) {
     const id = req.params.id;
-    Student.findByIdAndDelete(id, function (err, user) {
+    Student.findByIdAndDelete(id, function (err, student) {
 
         if (err) return console.log(err);
         res.send(student);
@@ -70,7 +70,7 @@ app.delete("/api/students/:id", function (req, res) {
 app.put("/api/students", jsonParser, function (req, res) {
 
     if (!req.body) return res.sendStatus(400);
-    const id = new objectId(req.body.id);
+    const id = req.body.id;
     const studentName = req.body.name;
     const studentLastName = req.body.lastname;
     const studentAge = req.body.age;
@@ -78,7 +78,7 @@ app.put("/api/students", jsonParser, function (req, res) {
 
     const newStudent = { age: studentAge, lastname: studentLastName, name: studentName, group: studentGroup };
 
-    Student.findOneAndUpdate({ _id: id }, newStudent, { new: true }, function (err, user) {
+    Student.findOneAndUpdate({ _id: id }, newStudent, { new: true }, function (err, student) {
         if (err) return console.log(err);
         res.send(student);
     });
